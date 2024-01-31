@@ -1,0 +1,5 @@
+*.ini*
+Scripts/
+Lib/
+Include/
+pyvenv.cfg
