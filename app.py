@@ -79,7 +79,9 @@ class JokeResource(Resource):
         return {'message': 'Joke added successfully'}, 201
 
 class LoginResource(Resource):
+    @swag_from('swagger_doc/login.yml')  # Reference to Swagger documentation
     def post(self):
+        """Endpoint to obtain a JWT token by providing valid credentials."""
         data = request.get_json()
         username = data.get('username')
         password = data.get('password')

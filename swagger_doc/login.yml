@@ -1,0 +1,21 @@
+---
+tags:
+  - Authentication
+description: Obtain a JWT token by providing valid credentials
+parameters:
+  - name: username
+    in: body
+    type: string
+    required: true
+  - name: password
+    in: body
+    type: string
+    required: true
+responses:
+  200:
+    description: Successful response
+    schema:
+      type: object
+      properties:
+        access_token:
+          type: string
