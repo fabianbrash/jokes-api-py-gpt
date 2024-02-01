@@ -1,0 +1,22 @@
+---
+tags:
+  - Jokes
+description: Get a list of jokes
+responses:
+  200:
+    description: Successful response
+    schema:
+      type: array
+      items:
+        type: object
+        properties:
+          id:
+            type: string
+          joke:
+            type: string
+          punchline:
+            type: string
+          author:
+            type: string
+          year:
+            type: integer

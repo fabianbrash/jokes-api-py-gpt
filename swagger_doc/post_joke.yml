@@ -1,0 +1,25 @@
+---
+tags:
+  - Jokes
+description: Add a new joke
+parameters:
+  - name: Authorization
+    in: header
+    type: string
+    required: true
+  - name: joke
+    in: body
+    type: object
+    required: true
+    properties:
+      joke:
+        type: string
+      punchline:
+        type: string
+      author:
+        type: string
+      year:
+        type: integer
+responses:
+  201:
+    description: Joke added successfully

@@ -2,9 +2,9 @@ from flask import Flask, request, jsonify
 from flask_restful import Api, Resource
 from flask_jwt_extended import JWTManager, jwt_required, create_access_token
 from azure.cosmos import CosmosClient
+from flasgger import Swagger, swag_from
 import uuid
 import configparser
-
 
 # Read configuration from config.ini
 config = configparser.ConfigParser()
@@ -25,6 +25,14 @@ api = Api(app)
 app.config['JWT_SECRET_KEY'] = JWT_SECRET_ID  # Change this to a secure secret key
 jwt = JWTManager(app)
 
+# Swagger configuration
+app.config['SWAGGER'] = {
+    'title': 'Joke API',
+    'uiversion': 3,
+}
+
+swagger = Swagger(app)
+
 # Initialize Flask app and CosmosDB client
 #app = Flask(__name__)
 #api = Api(app)
@@ -36,7 +44,9 @@ container = database.get_container_client(CONTAINER_ID)
 
 # API Resource for jokes
 class JokeResource(Resource):
+    @swag_from('swagger_doc/get_jokes.yml')  # Reference to Swagger documentation
     def get(self):
+        """Endpoint to get jokes."""
         query = 'SELECT * FROM c'
         items = list(container.query_items(query, enable_cross_partition_query=True))
 
@@ -54,7 +64,9 @@ class JokeResource(Resource):
         return jokes
 
     @jwt_required()
+    @swag_from('swagger_doc/post_joke.yml')  # Reference to Swagger documentation
     def post(self):
+        """Endpoint to add a new joke."""
         data = request.get_json()
         new_joke = {
             'id': str(uuid.uuid4()),
