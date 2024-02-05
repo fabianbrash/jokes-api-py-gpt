@@ -23,6 +23,10 @@ JWT_SECRET_ID = config.get('jwt', 'jwt_secret_id')
 app = Flask(__name__)
 api = Api(app)
 app.config['JWT_SECRET_KEY'] = JWT_SECRET_ID  # Change this to a secure secret key
+# Set the expiration time for access tokens (in seconds)
+# the default is 15 minutes or 900 seconds
+app.config['JWT_ACCESS_TOKEN_EXPIRES'] = 1800  # 30 minutes
+
 jwt = JWTManager(app)
 
 # Swagger configuration
