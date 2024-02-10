@@ -13,8 +13,6 @@ config = configparser.ConfigParser()
 config.read('config.ini')
 
 # Get CosmosDB credentials from the config file
-#COSMOSDB_ENDPOINT = config.get('CosmosDB', 'endpoint')
-#COSMOSDB_KEY = config.get('CosmosDB', 'key')
 DATABASE_ID = config.get('CosmosDB', 'database_id')
 CONTAINER_ID = config.get('CosmosDB', 'container_id')
 USER_ID = config.get('jwt', 'user')

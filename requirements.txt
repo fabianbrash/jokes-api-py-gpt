@@ -32,7 +32,7 @@ portalocker==2.8.2
 pycparser==2.21
 PyJWT==2.8.0
 pytz==2023.4
-pywin32==306
+pywin32==306; platform_system=="Windows"
 PyYAML==6.0.1
 referencing==0.33.0
 requests==2.31.0
