@@ -15,30 +15,13 @@ config.read('config.ini')
 # Get CosmosDB credentials from the config file
 DATABASE_ID = config.get('CosmosDB', 'database_id')
 CONTAINER_ID = config.get('CosmosDB', 'container_id')
-USER_ID = config.get('jwt', 'user')
-PWD = config.get('jwt', 'password')
-JWT_SECRET_ID = config.get('jwt', 'jwt_secret_id')
+#USER_ID = config.get('jwt', 'user')
+#PWD = config.get('jwt', 'password')
+#JWT_SECRET_ID = config.get('jwt', 'jwt_secret_id')
 
 # Azure Key Vault Configuration
 KEY_VAULT_URL = "https://wus-app-kv.vault.azure.net/"
 #KEY_VAULT_CLIENT_ID = JOKE_API_CLIENT_ID
-
-app = Flask(__name__)
-api = Api(app)
-app.config['JWT_SECRET_KEY'] = JWT_SECRET_ID  # Change this to a secure secret key
-
-# Set the expiration time for access tokens (in seconds)
-# the default is 15 minutes or 900 seconds
-app.config['JWT_ACCESS_TOKEN_EXPIRES'] = 1800  # 30 minutes
-jwt = JWTManager(app)
-
-# Swagger configuration
-app.config['SWAGGER'] = {
-    'title': 'Joke API',
-    'uiversion': 3,
-}
-
-swagger = Swagger(app)
 
 # Use DefaultAzureCredential
 # We are using a system managed account here
@@ -54,10 +37,32 @@ credential = DefaultAzureCredential()
 # Create a Key Vault SecretClient
 secret_client = SecretClient(vault_url=KEY_VAULT_URL, credential=credential)
 
+# Need this one now
+jwt_secret_id = secret_client.get_secret("jwtsecretid").value
+
+app = Flask(__name__)
+api = Api(app)
+app.config['JWT_SECRET_KEY'] = jwt_secret_id  # Change this to a secure secret key
+
+# Set the expiration time for access tokens (in seconds)
+# the default is 15 minutes or 900 seconds
+app.config['JWT_ACCESS_TOKEN_EXPIRES'] = 1800  # 30 minutes
+jwt = JWTManager(app)
+
+# Swagger configuration
+app.config['SWAGGER'] = {
+    'title': 'Joke API',
+    'uiversion': 3,
+}
+
+swagger = Swagger(app)
+
+
 # Get secrets from Key Vault
 cosmosdb_endpoint = secret_client.get_secret("wus-cosmo-endpoint").value
 cosmosdb_key = secret_client.get_secret("wus-cosmo-write-key").value
-
+jwt_user = secret_client.get_secret("jwtuser").value
+jwt_usr_pw = secret_client.get_secret("jwtuserpw").value
 
 # Initialize Flask app and CosmosDB client
 #app = Flask(__name__)
@@ -123,7 +128,7 @@ class LoginResource(Resource):
         # Check username and password (implement your own logic)
 
         # If credentials are valid, create and return a JWT token
-        if username == USER_ID and password == PWD:
+        if username == jwt_user and password == jwt_usr_pw:
             access_token = create_access_token(identity=username)
             response_data = jsonify({'access_token': access_token})
             print("ACCESS TOKEN:", access_token)
